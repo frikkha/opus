@@ -10,8 +10,6 @@ export default function App() {
   const [isStarted, setIsStarted] = useState<Boolean>(false);
 
 
-  let spotify_access = process.env.SPOTIFY_ACCESS_TOKEN
-  let yt_link = 'https://www.youtube.com/watch?v=iRA82xLsb_w&feature=youtu.be'
 
   let rollDice = ()=> {
     setValue(Math.floor( Math.random() * 6) + 1)
@@ -37,50 +35,30 @@ export default function App() {
   let playOpus = () =>  {
 
   }
-
-  return (
-    <View style={styles.container}>
-      <WebView
-          javaScriptEnabled
-          style={{ height: 100, width: 300 }}
-          source={{
-            html: `
-                  <!DOCTYPE html>
-                  <html>
-                    <body>
-                      <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://www.youtube.com/embed/iRA82xLsb_w?autoplay=1"></iframe>
-                  </html> 
-            `,
-          }}
-          automaticallyAdjustContentInsets={false}
-        />
-    </View>
-  )
  
-//   return (
-//     ! isStarted ? 
-//     <View style={styles.startButton}>
-//       <TouchableOpacity>
-//         <Button title={'Start'} onPress={ () => {
-//           setIsStarted(true)
-//           playOpus()
-//           }}/>
+  return (
+    ! isStarted ? 
+    <View style={styles.startButton}>
+      <TouchableOpacity>
+        <Button title={'Start'} onPress={ () => {
+          setIsStarted(true)
+          playOpus()
+          }}/>
     
-//       </TouchableOpacity>
+      </TouchableOpacity>
 
-//     </View>
-//     :
-//     <View style={styles.container}>
-//       <TouchableOpacity onPress={rollDice}>
-//         <Image 
-//                 style={styles.image}
-//                 source={path}
-//                 />    
-//       </TouchableOpacity>  
-//       <Text> Path: {path} </Text>
-//       <Text>Count: {value}</Text>
-//     </View>
-//     )
+    </View>
+    :
+    <View style={styles.container}>
+      <TouchableOpacity onPress={rollDice}>
+        <Image 
+                style={styles.image}
+                source={path}
+                />    
+      </TouchableOpacity>  
+
+    </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -91,8 +69,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    width: 100,
-    height: 100
+    width: 200,
+    height: 200
   },
   startButton: {
     flex: 1,
