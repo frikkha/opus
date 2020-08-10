@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Button } from 'react-native';
-import { WebView } from 'react-native-webview';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Button, Vibration } from 'react-native';
+import { Accelerometer } from 'expo-sensors';
 
+
+const THRESHOLD = 150;
 
 export default function App() {
 
@@ -14,7 +16,29 @@ export default function App() {
   let rollDice = ()=> {
     setValue(Math.floor( Math.random() * 6) + 1)
     getPath2()
+    Vibration.vibrate(10);
   }
+
+  const addListener = (handler: any) => {
+    let last_x: number, last_y: number, last_z:number ;
+    let lastUpdate = 0;
+    Accelerometer.addListener(accelerometerData => {
+        let { x, y, z } = accelerometerData;
+        let currTime = Date.now();
+        if ((currTime - lastUpdate) > 100) {
+            let diffTime = (currTime - lastUpdate);
+            lastUpdate = currTime;
+            let speed = Math.abs(x + y + z - last_x - last_y - last_z) / diffTime * 10000;
+            if (speed > THRESHOLD) {
+                handler();
+            }
+            last_x = x;
+            last_y = y;
+            last_z = z;
+        }
+    });
+}
+  
 
   let getPath2 = () => {
       if (value === 1){
@@ -35,6 +59,12 @@ export default function App() {
   let playOpus = () =>  {
 
   }
+
+  useEffect (() => {
+    addListener( () => {
+      rollDice()
+    })
+  })  
  
   return (
     ! isStarted ? 
