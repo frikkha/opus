@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Button, Vibration } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
+import Video from 'react-native-video';
+
 
 
 const THRESHOLD = 150;
+const video = require('./opus2.mp4');
 
 export default function App() {
 
   const [value, setValue] = useState(5);
   const [path, setPath] = useState(require('./img/5.png'));
   const [isStarted, setIsStarted] = useState<Boolean>(false);
+  const [isRolling, setIsRolling] = useState<Boolean>(false);
 
 
-
+  //Animate this so that it is not possible to refresh before dice is updated
   let rollDice = ()=> {
+    setIsRolling(true)
     setValue(Math.floor( Math.random() * 6) + 1)
     getPath2()
     Vibration.vibrate(10);
+    setIsRolling(false)
   }
 
   const addListener = (handler: any) => {
@@ -38,7 +44,7 @@ export default function App() {
         }
     });
 }
-  
+
 
   let getPath2 = () => {
       if (value === 1){
@@ -56,39 +62,40 @@ export default function App() {
     }
   }
 
-  let playOpus = () =>  {
-
-  }
 
   useEffect (() => {
     addListener( () => {
       rollDice()
     })
-  })  
- 
+  })
+
   return (
-    ! isStarted ? 
+    ! isStarted ?
     <View style={styles.startButton}>
       <TouchableOpacity>
         <Button title={'Start'} onPress={ () => {
           setIsStarted(true)
-          playOpus()
           }}/>
-    
+
       </TouchableOpacity>
 
+    </View>
+    : <Video source={video}  audioOnly={true}playInBackground={true} playWhenInactive={true}></Video>  
+    && (isRolling ?
+    <View>
+      
     </View>
     :
     <View style={styles.container}>
       <TouchableOpacity onPress={rollDice}>
-        <Image 
+        <Image
                 style={styles.image}
                 source={path}
-                />    
-      </TouchableOpacity>  
+                />
+      </TouchableOpacity>
 
     </View>
-    )
+    ))
 }
 
 const styles = StyleSheet.create({
